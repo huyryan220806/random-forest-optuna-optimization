@@ -1,0 +1,160 @@
+{
+  "schema_version": 2,
+  "created_at_utc": "2026-10-25T16:16:58.807420+00:00",
+  "seed": 42,
+  "seeds": {
+    "split": 42,
+    "cv": 42,
+    "random_forest": 42,
+    "optuna": 42
+  },
+  "dataset": {
+    "name": "Breast Cancer Wisconsin (Diagnostic)",
+    "loader": "sklearn.datasets.load_breast_cancer",
+    "source_doi": "https://doi.org/10.24432/C5DW2B",
+    "n_samples": 569,
+    "n_features": 30,
+    "target_transform": "y = (target == 0).astype(int)",
+    "positive_class": "malignant",
+    "labels": {
+      "0": "benign",
+      "1": "malignant"
+    }
+  },
+  "split": {
+    "method": "train_test_split",
+    "test_size": 0.2,
+    "stratify": true,
+    "shuffle": true,
+    "random_state": 42,
+    "n_train": 455,
+    "n_test": 114,
+    "train_class_counts": {
+      "benign_0": 285,
+      "malignant_1": 170
+    },
+    "test_class_counts": {
+      "benign_0": 72,
+      "malignant_1": 42
+    }
+  },
+  "cv": {
+    "method": "StratifiedKFold",
+    "n_splits": 3,
+    "shuffle": true,
+    "random_state": 42,
+    "scoring": "roc_auc",
+    "data_scope": "train_only",
+    "std_ddof": 0,
+    "n_jobs": 1,
+    "fold_sizes": [
+      {
+        "train": 303,
+        "validation": 152
+      },
+      {
+        "train": 303,
+        "validation": 152
+      },
+      {
+        "train": 304,
+        "validation": 151
+      }
+    ]
+  },
+  "holdout_evaluated": false,
+  "timing": {
+    "clock": "time.perf_counter",
+    "duration_sec_scope": "trial objective wall time: sampling, model creation, CV and metric logging",
+    "cv_duration_sec_scope": "3-fold CV wall time, measured identically to baseline duration_sec",
+    "search_duration_sec_scope": "study.optimize wall time, including trial CSV checkpoints; excludes baseline"
+  },
+  "versions": {
+    "python": "3.12.10",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "optuna": "4.5.0"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "logical_cpu_count": 12
+  },
+  "stage": "S2-search",
+  "status": "complete",
+  "error": null,
+  "n_trials": 30,
+  "n_trials_recorded": 30,
+  "n_complete": 30,
+  "n_failed": 0,
+  "search_space": {
+    "n_estimators": {
+      "low": 50,
+      "high": 250,
+      "step": 50
+    },
+    "max_depth": [
+      null,
+      4,
+      6,
+      8,
+      12,
+      16,
+      24
+    ],
+    "min_samples_leaf": {
+      "low": 1,
+      "high": 8
+    }
+  },
+  "sampler": {
+    "name": "TPESampler",
+    "seed": 42,
+    "n_startup_trials": 10
+  },
+  "direction": "maximize",
+  "pruner": "NopPruner",
+  "study_n_jobs": 1,
+  "best_trial_number": 10,
+  "best_params": {
+    "n_estimators": 50,
+    "max_depth": 16,
+    "min_samples_leaf": 1
+  },
+  "model_params": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": null,
+    "criterion": "gini",
+    "max_depth": 16,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 50,
+    "n_jobs": 1,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "best_cv_auc_mean": 0.9899337158686189,
+  "best_cv_auc_std": 0.004250459350418323,
+  "best_cv_auc_folds": [
+    0.9931671283471837,
+    0.9927054478301016,
+    0.9839285714285715
+  ],
+  "best_trial_duration_sec": 0.43711549998261034,
+  "baseline_cv_auc_mean": 0.98953798971112,
+  "cv_auc_improvement": 0.00039572615749894346,
+  "search_duration_sec": 24.97832059999928
+}

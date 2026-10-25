@@ -1,14 +1,13 @@
 {
-  "schema_version": 1,
-  "stage": "S1-baseline",
-  "created_at_utc": "2026-10-25T16:05:02.597448+00:00",
+  "schema_version": 2,
+  "created_at_utc": "2026-10-25T16:16:58.807420+00:00",
   "seed": 42,
   "seeds": {
     "split": 42,
     "cv": 42,
-    "random_forest": 42
+    "random_forest": 42,
+    "optuna": 42
   },
-  "n_trials": 0,
   "dataset": {
     "name": "Breast Cancer Wisconsin (Diagnostic)",
     "loader": "sklearn.datasets.load_breast_cancer",
@@ -64,6 +63,28 @@
     ]
   },
   "holdout_evaluated": false,
+  "timing": {
+    "clock": "time.perf_counter",
+    "duration_sec_scope": "3-fold CV wall time: fitting, scoring and CV overhead"
+  },
+  "versions": {
+    "python": "3.12.10",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "optuna": "4.5.0"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "logical_cpu_count": 12
+  },
+  "stage": "S2-baseline",
+  "n_trials": 30,
+  "baseline_search_trials": 0,
   "params": {
     "bootstrap": true,
     "ccp_alpha": 0.0,
@@ -92,35 +113,15 @@
   ],
   "cv_auc_mean": 0.98953798971112,
   "cv_auc_std": 0.0034356257821230238,
-  "duration_sec": 0.6919962000101805,
+  "duration_sec": 0.7159081000136212,
   "fit_time_sec_per_fold": [
-    0.20525050163269043,
-    0.21870970726013184,
-    0.23811864852905273
+    0.2036447525024414,
+    0.24663209915161133,
+    0.2333660125732422
   ],
   "score_time_sec_per_fold": [
-    0.008374929428100586,
-    0.010176420211791992,
-    0.007990837097167969
-  ],
-  "timing": {
-    "clock": "time.perf_counter",
-    "duration_sec_scope": "3-fold CV wall time: fitting, scoring and CV overhead",
-    "run_duration_sec": 0.7132564999628812,
-    "run_duration_sec_scope": "data loading, split, folds and baseline CV; excludes JSON write"
-  },
-  "versions": {
-    "python": "3.12.10",
-    "numpy": "2.2.6",
-    "scipy": "1.15.3",
-    "scikit-learn": "1.7.2",
-    "joblib": "1.5.2",
-    "threadpoolctl": "3.6.0"
-  },
-  "environment": {
-    "platform": "Windows-11-10.0.26300-SP0",
-    "machine": "AMD64",
-    "processor": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
-    "logical_cpu_count": 12
-  }
+    0.011974334716796875,
+    0.009944438934326172,
+    0.008959054946899414
+  ]
 }

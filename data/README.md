@@ -40,6 +40,7 @@ Thay đổi duy nhất với dữ liệu là đảo mã nhãn như trên và chi
 Không chuẩn hóa, điền khuyết, chọn đặc trưng hay cân bằng lại lớp.
 ROC-AUC dùng xác suất của lớp 1; F1 ở S3 cũng sẽ dùng malignant làm nhãn dương.
 
-Tách stratified 80/20, seed 42. S1 chỉ chạy 3-fold stratified CV trên train;
-holdout được dành lại cho S3. Chỉ dùng mô hình cho thực nghiệm môn học,
+Tách stratified 80/20, seed 42. S1/S2 chạy baseline và Optuna bằng cùng
+3-fold stratified CV trên train; holdout được dành lại cho S3.
+Chỉ dùng mô hình cho thực nghiệm môn học,
 không suy diễn thành công cụ chẩn đoán lâm sàng.

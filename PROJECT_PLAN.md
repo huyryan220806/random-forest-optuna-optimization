@@ -2,7 +2,7 @@
 
 > **Tài liệu làm việc cho Codex** | Học phần: **Nhập môn Tối ưu hóa** | Bài tập lớn **cá nhân** | Ngôn ngữ thực hiện: **Python**
 >
-> **Trạng thái (25/10/2026):** đã triển khai và kiểm chứng **S1 — khởi tạo & baseline**. Baseline CV có kết quả thật trong `results/baseline.json`; **S2 chưa triển khai**, holdout chưa được đánh giá. Xem nhật ký ở mục 10.
+> **Trạng thái (25/10/2026):** đã triển khai và kiểm chứng **S1/S2 — baseline, Optuna & logging**. Run chính có đủ 30 trials trong `results/trials.csv` và cấu hình chọn bằng CV trong `results/best_config.json`. **S3 chưa triển khai**, holdout chưa được đánh giá. Xem nhật ký ở mục 10–11.
 >
 > **Quỹ thời gian thực tế:** 2–3 tuần tập trung, **1–2 ngày làm việc mỗi tuần** (dự kiến 4 ngày làm việc cốt lõi, tối đa 6 ngày nếu có thể). Hạn chế phát sinh việc ngoài phạm vi.
 
@@ -222,30 +222,30 @@ Có thể bổ sung bảng so sánh baseline / optimized (CV mean±std; test ROC
 
 ### Kỹ thuật
 
-- [ ] `python -m src.experiment --trials 3 --seed 42 --output-dir results/smoke` chạy thành công.
-- [ ] `python -m src.experiment --trials 30 --seed 42 --output-dir results` chạy thành công.
-- [ ] Tất cả dữ liệu chỉ split **một lần**; đúng stratify và random seed.
-- [ ] CV của baseline và Optuna dùng **cùng train set, 3 folds, metric**.
-- [ ] Trong objective Optuna **không đọc X_test/y_test**; nhãn `malignant=1` nhất quán.
-- [ ] Các tham số baseline nằm trong search space; không sửa baseline để tạo chênh lệch giả.
-- [ ] `trials.csv` có đủ 30 trial và metric/params/duration/trial state.
+- [x] `python -m src.experiment --trials 3 --seed 42 --output-dir results/smoke` chạy thành công.
+- [x] `python -m src.experiment --trials 30 --seed 42 --output-dir results` chạy thành công.
+- [x] Tất cả dữ liệu chỉ split **một lần**; đúng stratify và random seed.
+- [x] CV của baseline và Optuna dùng **cùng train set, 3 folds, metric**.
+- [x] Trong objective Optuna **không đọc X_test/y_test**; nhãn `malignant=1` nhất quán.
+- [x] Các tham số baseline nằm trong search space; không sửa baseline để tạo chênh lệch giả.
+- [x] `trials.csv` có đủ 30 trial và metric/params/duration/trial state.
 - [ ] `best_config.json`, `baseline.json`, `final_metrics.json` có thật, không điền số giả.
 - [ ] Sinh 2 hình qua `src.plots` từ log; không hard-code performance.
 - [ ] Kết quả cuối có phân tích cả **mặt tốt, mặt hạn chế và chi phí search**.
-- [ ] `requirements.txt` có phiên bản hợp lý, ghi Python version và cách tái lập.
-- [ ] Không có secret, dữ liệu nhạy cảm, file mô hình quá lớn, `.venv` trong Git.
+- [x] `requirements.txt` có phiên bản hợp lý, ghi Python version và cách tái lập.
+- [x] Không có secret, dữ liệu nhạy cảm, file mô hình quá lớn, `.venv` trong Git.
 
 ### Báo cáo/Portfolio
 
-- [ ] Problem statement + tên nguồn dataset + lý do chọn.
-- [ ] Viết rõ **x, f(x), Ω, budget/trade-off**; code trùng với công thức.
-- [ ] Baseline và nguyên lý TPE; không chỉ ghi `study.optimize(...)`.
-- [ ] Protocol train/CV/test; seed, budget, môi trường; giới hạn nghiên cứu.
+- [x] Problem statement + tên nguồn dataset + lý do chọn.
+- [x] Viết rõ **x, f(x), Ω, budget/trade-off**; code trùng với công thức.
+- [x] Baseline và nguyên lý TPE; không chỉ ghi `study.optimize(...)`.
+- [x] Protocol train/CV/test; seed, budget, môi trường; giới hạn nghiên cứu.
 - [ ] Bảng và ≥2 hình có thể tái lập; chọn nghiệm cuối bằng lý do và số liệu.
 - [ ] Báo cáo Word/PDF 8–12 trang, repo link; slide 5–8 trang **hoặc** 1 trang tóm tắt; demo 5–7 phút.
 - [ ] GitHub public; README có Problem, Optimization Formulation, Dataset, Method, Key Results, How to Run, Repository Structure, Limitations.
 - [ ] Có ≥5 mốc commit có ý nghĩa; đối chiếu thêm yêu cầu **checkpoint theo tuần** nếu giảng viên kiểm tra.
-- [ ] Có mục **AI assistance** mô tả Codex hỗ trợ những gì và người làm đã tự kiểm chứng phần nào.
+- [x] Có mục **AI assistance** mô tả Codex hỗ trợ những gì và người làm đã tự kiểm chứng phần nào.
 
 ---
 
@@ -371,3 +371,67 @@ chưa được đánh dấu hoàn tất thay cho S1.
 Khi người dùng yêu cầu S2: tái sử dụng cấu hình/folds train, triển khai objective
 ROC-AUC và TPE với search space đã chốt, chạy 3-trial smoke riêng rồi 30-trial main,
 lưu trials CSV và best config. Holdout vẫn dành cho S3.
+
+
+---
+
+## 11. Nhật ký triển khai S2 — 25/10/2026
+
+**Phạm vi:** Optuna và logging, theo yêu cầu người dùng. S3 chưa triển khai.
+Giữ nguyên dataset, nhãn, split/CV, seed 42, baseline và search space đã chốt.
+
+### Thay đổi
+
+- Ghim Optuna 4.5.0; thêm `TPESampler(seed=42, n_startup_trials=10)`, maximize
+  ROC-AUC CV, 30 trials tuần tự, không pruning. Smoke 3 trials chỉ kiểm tra pipeline.
+- `run_experiment` split một lần và tạo một danh sách folds dùng chung;
+  baseline và mỗi RF mới của trial đi qua cùng hàm `evaluate_model`.
+- Objective chỉ nhận train/folds/config, không nhận holdout hoặc toàn bộ DataSplit.
+  Search space có đúng ba biến; tham số RF khác giữ mặc định ngoài seed/n_jobs.
+- CSV cập nhật sau từng trial, gồm params, mean/std, điểm từng fold, timing, state,
+  seed và error. `max_depth=None` được lưu bằng chuỗi `None` trong CSV, `null` trong JSON.
+- Trial lỗi được ghi `FAIL` với điểm để trống rồi dừng; best config ghi trạng thái
+  `incomplete`, không chọn trial lỗi. Kiểm chứng cả lỗi ngay trial đầu và sau trial thành công.
+- Best config chứa cấu hình chọn từ CV, toàn bộ tham số RF, protocol, phiên bản/môi trường,
+  sampler, số trials và thời gian search. JSON/CSV được ghi qua tệp tạm rồi thay thế.
+- Lệnh mặc định hiện chạy 30 trials; muốn chạy lại S1 dùng `--baseline-only` và
+  thư mục riêng. Smoke/budget khác 30 không được ghi vào thư mục kết quả chính.
+- Cập nhật README, data/report README, .gitignore và tests. Không thêm pandas,
+  matplotlib hoặc framework theo dõi thí nghiệm.
+
+### Lệnh đã chạy và kiểm chứng
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m src.experiment --trials 3 --seed 42 --output-dir results/smoke
+.\.venv\Scripts\python.exe -m src.experiment --trials 30 --seed 42 --output-dir results
+.\.venv\Scripts\python.exe -m src.experiment --trials 30 --seed 42 --output-dir results/repro
+```
+
+- **16 tests passed**; dependencies không có xung đột.
+- Test theo dõi việc split/folds: mỗi thao tác đúng một lần; baseline + các trial
+  nhận chính cùng đối tượng X_train/y_train và folds, metric ROC-AUC.
+  Kiểm tra closure objective chỉ giữ train arrays/folds/config.
+- Đã đọc lại code/diff, CSV và JSON thực tế. Assertion xác nhận đủ **30/30 COMPLETE**,
+  số trial 0–29, params đúng miền, tất cả điểm hữu hạn, mean/std tính lại từ từng fold
+  khớp log, best config đúng dòng có CV cao nhất và metadata nhất quán.
+- Chạy lại 30 trials tại `results/repro`: toàn bộ params, điểm từng fold/mean/std,
+  state và seed khớp tuyệt đối với run chính; timing được loại khỏi phép so sánh.
+  Ba trial smoke cũng khớp ba trial đầu run chính. Không dùng holdout để kiểm chứng.
+- Smoke best CV: **0.987947940025502**, 3 trials; chỉ giữ cục bộ.
+- Baseline main CV: **0.989537989711120 ± 0.003435625782123**.
+- Best trial **#10**: `{'n_estimators': 50, 'max_depth': 16, 'min_samples_leaf': 1}`;
+  CV **0.989933715868619 ± 0.004250459350418**.
+- Chênh CV: **+0.000395726157499 AUC**; mức chênh nhỏ, chưa kết luận
+  khả năng tổng quát hóa hoặc chọn mô hình cuối.
+- Thời gian CV baseline main: **0.715908 giây**;
+  search main: **24.978321 giây** (loại trừ baseline).
+
+### Điểm dừng
+
+S2 hoàn tất với `results/baseline.json`, `results/trials.csv` và
+`results/best_config.json`; commit cục bộ, không push GitHub.
+Holdout chưa được đánh giá (`holdout_evaluated=false`), chưa tạo final_metrics,
+plots hay báo cáo. Chỉ triển khai S3 sau khi người dùng yêu cầu.

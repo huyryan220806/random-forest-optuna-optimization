@@ -15,8 +15,9 @@ htmlcov/
 build/
 dist/
 *.egg-info/
-# Local verification runs; keep the main baseline JSON in Git.
+# Local verification runs; keep main experiment CSV/JSON files in Git.
 results/smoke/
 results/repro/
+results/baseline-only/
 # Original course handouts stay local; the working plan lives at the root.
 plans/*.pdf
