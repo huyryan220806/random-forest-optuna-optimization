@@ -2,7 +2,7 @@
 
 > **Tài liệu làm việc cho Codex** | Học phần: **Nhập môn Tối ưu hóa** | Bài tập lớn **cá nhân** | Ngôn ngữ thực hiện: **Python**
 >
-> **Trạng thái (25/10/2026):** đã triển khai và kiểm chứng **S1/S2 — baseline, Optuna & logging**. Run chính có đủ 30 trials trong `results/trials.csv` và cấu hình chọn bằng CV trong `results/best_config.json`. **S3 chưa triển khai**, holdout chưa được đánh giá. Xem nhật ký ở mục 10–11.
+> **Trạng thái (25/10/2026):** S1/S2 đã hoàn tất; **S3 đang triển khai** theo yêu cầu người dùng. Tiến độ và hướng dẫn tiếp tục nếu gián đoạn được lưu tại mục 12. Cấu hình S2 đã chốt, chưa đánh giá holdout tại thời điểm bắt đầu S3.
 >
 > **Quỹ thời gian thực tế:** 2–3 tuần tập trung, **1–2 ngày làm việc mỗi tuần** (dự kiến 4 ngày làm việc cốt lõi, tối đa 6 ngày nếu có thể). Hạn chế phát sinh việc ngoài phạm vi.
 
@@ -435,3 +435,31 @@ S2 hoàn tất với `results/baseline.json`, `results/trials.csv` và
 `results/best_config.json`; commit cục bộ, không push GitHub.
 Holdout chưa được đánh giá (`holdout_evaluated=false`), chưa tạo final_metrics,
 plots hay báo cáo. Chỉ triển khai S3 sau khi người dùng yêu cầu.
+
+---
+
+## 12. Tiến độ S3 và điểm tiếp tục — 25/10/2026
+
+Người dùng yêu cầu triển khai S3 và lưu tiến độ phòng khi hết quota.
+Commit nền: `90803c6`. Chỉ S3; chưa làm S4, chưa push GitHub.
+
+### Mốc hiện tại
+
+- [x] Đọc kế hoạch/code/log S2; Git sạch khi bắt đầu.
+- [ ] Thêm final evaluation từ cấu hình S2 đã lưu, không chạy lại tuning.
+- [ ] Thêm plots từ log và bảng so sánh, dependencies, kiểm tra S3.
+- [ ] Chạy kiểm tra, đánh giá holdout chính, lưu `results/final_metrics.json`.
+- [ ] Sinh hai hình, xem ảnh thực tế, cập nhật kết luận/README và commit.
+
+### Quy tắc tiếp tục nếu phiên bị gián đoạn
+
+1. Đọc mục này, `git status`, code thực tế và các file results trước khi làm tiếp.
+2. Giữ nguyên ba file S2: baseline.json, trials.csv, best_config.json. Best params:
+   n_estimators=50, max_depth=16, min_samples_leaf=1; seed=42, n_jobs=1.
+3. Holdout chỉ đánh giá sau khi chốt cấu hình; threshold cố định 0.5 (ties chọn lớp 0,
+   phù hợp argmax của RandomForest). Không tuning lại seed/search/threshold theo test.
+4. Nếu `final_metrics.json` đã tồn tại, đọc/kiểm tra trước, dùng lại cho bảng/hình;
+   không chạy lại holdout chỉ để lấy số đẹp hơn. Các log xuất phải ghi phiên bản và timing.
+5. Chỉ báo hoàn tất sau khi kiểm tra lệnh thực, nội dung JSON/CSV và hai ảnh.
+
+Mốc này được ghi trước khi viết code S3. Chưa có kết quả holdout.
