@@ -1,0 +1,22 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.idea/
+.vscode/
+build/
+dist/
+*.egg-info/
+# Local verification runs; keep the main baseline JSON in Git.
+results/smoke/
+results/repro/
+# Original course handouts stay local; the working plan lives at the root.
+plans/*.pdf
