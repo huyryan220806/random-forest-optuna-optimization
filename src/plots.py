@@ -85,7 +85,7 @@ def generate_plots(input_dir: Path, output_dir: Path):
                xlim=(0.5, len(rows) + 0.5))
         ax.grid(alpha=0.2)
         ax.legend(loc="lower right", frameon=True)
-        fig.get_layout_engine().set(rect=(0, 0.06, 1, 1))
+        fig.get_layout_engine().set(rect=(0, 0.06, 1, 0.94))
         fig.text(0.5, 0.015, "Training CV only. Holdout scores do not enter the search.",
                  ha="center", fontsize=9, color="#555555")
         fig.savefig(output_dir / "best_so_far.png", dpi=180)
@@ -101,7 +101,7 @@ def generate_plots(input_dir: Path, output_dir: Path):
                title=f"Random Forest tuning: score vs. search cost | seed {best['seed']}")
         ax.grid(alpha=0.2)
         ax.legend(loc="lower right", frameon=True)
-        fig.get_layout_engine().set(rect=(0, 0.07, 1, 1))
+        fig.get_layout_engine().set(rect=(0, 0.07, 1, 0.93))
         fig.text(0.5, 0.015, "Trial time includes sampling + CV. Baseline line compares scores, not runtime.",
                  ha="center", fontsize=9, color="#555555")
         fig.savefig(output_dir / "auc_vs_runtime.png", dpi=180)

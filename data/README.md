@@ -41,6 +41,7 @@ Không chuẩn hóa, điền khuyết, chọn đặc trưng hay cân bằng lạ
 ROC-AUC dùng xác suất của lớp 1; F1 ở S3 cũng sẽ dùng malignant làm nhãn dương.
 
 Tách stratified 80/20, seed 42. S1/S2 chạy baseline và Optuna bằng cùng
-3-fold stratified CV trên train; holdout được dành lại cho S3.
+3-fold stratified CV trên train. S3 tái dựng đúng split và đánh giá holdout một lần
+cho mỗi mô hình sau khi cấu hình đã chốt từ CV; ngưỡng giữ cố định 0.5.
 Chỉ dùng mô hình cho thực nghiệm môn học,
 không suy diễn thành công cụ chẩn đoán lâm sàng.

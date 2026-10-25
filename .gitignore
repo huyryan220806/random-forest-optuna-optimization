@@ -19,5 +19,7 @@ dist/
 results/smoke/
 results/repro/
 results/baseline-only/
+figures/repro/
+figures/smoke/
 # Original course handouts stay local; the working plan lives at the root.
 plans/*.pdf

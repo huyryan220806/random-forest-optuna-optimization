@@ -1,1 +1,1 @@
-"""Random Forest coursework: baseline and Optuna CV search (S1/S2)."""
+"""Random Forest coursework: baseline, Optuna, holdout evaluation and figures."""

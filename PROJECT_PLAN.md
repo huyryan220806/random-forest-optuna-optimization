@@ -2,7 +2,7 @@
 
 > **Tài liệu làm việc cho Codex** | Học phần: **Nhập môn Tối ưu hóa** | Bài tập lớn **cá nhân** | Ngôn ngữ thực hiện: **Python**
 >
-> **Trạng thái (25/10/2026):** S1/S2 đã hoàn tất; **S3 đang triển khai** theo yêu cầu người dùng. Tiến độ và hướng dẫn tiếp tục nếu gián đoạn được lưu tại mục 12. Cấu hình S2 đã chốt, chưa đánh giá holdout tại thời điểm bắt đầu S3.
+> **Trạng thái (25/10/2026):** **S1–S3 đã hoàn tất và kiểm chứng**. Có log 30 trials, holdout metrics, hai hình và bảng sinh từ log. Checkpoint/hướng dẫn tiếp tục tại mục 12. **S4 chưa triển khai; chưa push GitHub.**
 >
 > **Quỹ thời gian thực tế:** 2–3 tuần tập trung, **1–2 ngày làm việc mỗi tuần** (dự kiến 4 ngày làm việc cốt lõi, tối đa 6 ngày nếu có thể). Hạn chế phát sinh việc ngoài phạm vi.
 
@@ -229,9 +229,9 @@ Có thể bổ sung bảng so sánh baseline / optimized (CV mean±std; test ROC
 - [x] Trong objective Optuna **không đọc X_test/y_test**; nhãn `malignant=1` nhất quán.
 - [x] Các tham số baseline nằm trong search space; không sửa baseline để tạo chênh lệch giả.
 - [x] `trials.csv` có đủ 30 trial và metric/params/duration/trial state.
-- [ ] `best_config.json`, `baseline.json`, `final_metrics.json` có thật, không điền số giả.
-- [ ] Sinh 2 hình qua `src.plots` từ log; không hard-code performance.
-- [ ] Kết quả cuối có phân tích cả **mặt tốt, mặt hạn chế và chi phí search**.
+- [x] `best_config.json`, `baseline.json`, `final_metrics.json` có thật, không điền số giả.
+- [x] Sinh 2 hình qua `src.plots` từ log; không hard-code performance.
+- [x] Kết quả cuối có phân tích cả **mặt tốt, mặt hạn chế và chi phí search**.
 - [x] `requirements.txt` có phiên bản hợp lý, ghi Python version và cách tái lập.
 - [x] Không có secret, dữ liệu nhạy cảm, file mô hình quá lớn, `.venv` trong Git.
 
@@ -241,7 +241,7 @@ Có thể bổ sung bảng so sánh baseline / optimized (CV mean±std; test ROC
 - [x] Viết rõ **x, f(x), Ω, budget/trade-off**; code trùng với công thức.
 - [x] Baseline và nguyên lý TPE; không chỉ ghi `study.optimize(...)`.
 - [x] Protocol train/CV/test; seed, budget, môi trường; giới hạn nghiên cứu.
-- [ ] Bảng và ≥2 hình có thể tái lập; chọn nghiệm cuối bằng lý do và số liệu.
+- [x] Bảng và ≥2 hình có thể tái lập; chọn nghiệm cuối bằng lý do và số liệu.
 - [ ] Báo cáo Word/PDF 8–12 trang, repo link; slide 5–8 trang **hoặc** 1 trang tóm tắt; demo 5–7 phút.
 - [ ] GitHub public; README có Problem, Optimization Formulation, Dataset, Method, Key Results, How to Run, Repository Structure, Limitations.
 - [ ] Có ≥5 mốc commit có ý nghĩa; đối chiếu thêm yêu cầu **checkpoint theo tuần** nếu giảng viên kiểm tra.
@@ -448,8 +448,8 @@ Commit nền: `90803c6`. Chỉ S3; chưa làm S4, chưa push GitHub.
 - [x] Đọc kế hoạch/code/log S2; Git sạch khi bắt đầu.
 - [x] Thêm final evaluation từ cấu hình S2 đã lưu, không chạy lại tuning.
 - [x] Thêm plots từ log và bảng so sánh, dependencies, kiểm tra S3.
-- [ ] Chạy kiểm tra, đánh giá holdout chính, lưu `results/final_metrics.json`.
-- [ ] Sinh hai hình, xem ảnh thực tế, cập nhật kết luận/README và commit.
+- [x] Chạy kiểm tra, đánh giá holdout chính, lưu `results/final_metrics.json`.
+- [x] Sinh hai hình, xem ảnh thực tế, cập nhật kết luận/README và commit.
 
 ### Quy tắc tiếp tục nếu phiên bị gián đoạn
 
@@ -466,7 +466,10 @@ Mốc cập nhật: đã viết code `--evaluate-only`, `src/plots.py`, `tests/t
 và cài matplotlib 3.10.6. Bộ kiểm tra ban đầu 23 tests đạt; sau sửa fingerprint để
 chịu được chuyển đổi CRLF/LF của Git, 8 tests S3 đạt (tổng 24 test cases cùng 16 tests S1/S2).
 `pip check` không lỗi. Matplotlib phát cảnh báo deprecation từ pyparsing; không ảnh hưởng kết quả.
-Chưa đánh giá holdout chính thức tại checkpoint code này.
+Checkpoint code: `14f558c`. Đã chạy đánh giá holdout chính thức thành công và lưu
+`results/final_metrics.json` với `status=complete`: baseline AUC 0.992890, optimized
+AUC 0.994048; F1 hai mô hình cùng 0.962963. Không cần fit/dự đoán lại; còn sinh/xem ảnh,
+đối chiếu bảng/log và hoàn thiện README/kết luận.
 
 Lệnh tiếp tục tại thư mục gốc (chỉ chạy đánh giá sau khi tests đạt):
 
@@ -479,3 +482,38 @@ Lệnh tiếp tục tại thư mục gốc (chỉ chạy đánh giá sau khi tes
 Lệnh evaluate-only lưu checkpoint `final_metrics.json` sau từng model; chạy lại với
 cùng source hashes sẽ bỏ qua model đã xong, hoặc trả kết quả đã hoàn tất không fit lại.
 Tiếp theo: xem hai PNG, kiểm tra bảng/log, cập nhật README/kết luận, commit S3.
+
+### Bàn giao S3 hoàn tất
+
+- Hai checkpoint trước đó: `3fbc81f` (kế hoạch tiếp tục) và `14f558c` (code/tests).
+  Phần code và kết quả được lưu cục bộ; không phụ thuộc việc giữ phiên chat mở.
+- Kết quả chính đã lưu ở `results/final_metrics.json` với `status=complete`.
+  Ba file S2 giữ nguyên. Cấu hình 50 cây / depth 16 / leaf 1 được chọn bởi CV
+  và ghi checkpoint trước khi dự đoán holdout; không chọn lại theo test.
+- Mỗi model fit toàn bộ 455 mẫu train một lần, gọi predict_proba một lần trên 114 mẫu test.
+  AUC dùng xác suất malignant=1; nhãn phân loại dùng argmax, ties chọn benign.
+- Baseline: test AUC **0.9928902116402116**, F1 **0.9629629629629629**,
+  accuracy **0.9736842105263158**, balanced accuracy **0.9642857142857143**.
+- Optimized: test AUC **0.9940476190476191**, F1/accuracy/balanced accuracy bằng baseline.
+  Confusion matrix cả hai **[[72, 0], [3, 39]]**, hàng thật/cột dự đoán, nhãn [0, 1].
+- Fit baseline/optimized: **0.298146 / 0.147775 giây**. Predict batch 114 mẫu:
+  **9.779 / 4.134 ms**. Đây là một lần đo, không phải latency được bảo đảm.
+  Chi phí search Optuna tăng thêm **24.978321 giây**.
+- Quyết định cho dự án: giữ cấu hình Optuna vì CV nhỉnh hơn và model ít cây hơn;
+  holdout cho AUC nhỉnh hơn nhưng không cải thiện F1 hay số mẫu sai. Không tuyên bố
+  ưu thế có ý nghĩa thống kê từ một seed/holdout nhỏ.
+- Sinh `figures/best_so_far.png`, `figures/auc_vs_runtime.png`, `comparison.csv`,
+  `comparison.md`. Đã xem hai PNG; sửa lề trên để không cắt tiêu đề, xem lại đạt.
+  Baseline trong scatter chỉ là tham chiếu AUC; không so thời gian sampling với baseline CV.
+- Kiểm chứng: 16 tests S1/S2 + 8 tests S3 đạt. Tests S3 dùng dự đoán tổng hợp trong
+  thư mục tạm, không tạo số giả cho main. `pip check` đạt; chỉ có cảnh báo deprecation
+  của dependency matplotlib/pyparsing.
+- Assertion trên log thật: tính lại F1/accuracy/balanced accuracy từ confusion matrix
+  khớp JSON; fingerprints nguồn khớp; gọi lại final evaluation không fit/predict,
+  không đổi byte của JSON. Hai PNG và hai bảng sinh lại ở `figures/repro` giống hệt.
+- Đã cập nhật README (bảng lấy từ log, hai hình, cách chạy/resume, quyết định/giới hạn),
+  data/report README và .gitignore. Các artifacts repro và virtualenv không đưa vào Git.
+
+**Điểm tiếp tục:** S3 đã xong. Nếu phiên kết thúc do quota, đọc mục này và `git status`;
+không cần chạy lại tuning/holdout. Chờ người dùng yêu cầu S4 để làm báo cáo 8–12 trang,
+slide/tóm tắt và hướng dẫn demo. Chưa tự push GitHub.
