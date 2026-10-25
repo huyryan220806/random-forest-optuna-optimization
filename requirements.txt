@@ -1,4 +1,4 @@
-# S1/S2: baseline, Optuna search and verification. Plotting belongs to S3.
+# S1-S3: baseline, Optuna, holdout evaluation, plots and verification.
 # Runtime versions are pinned for reproducible default RF behavior.
 numpy==2.2.6
 scipy==1.15.3
@@ -7,3 +7,4 @@ joblib==1.5.2
 threadpoolctl==3.6.0
 pytest==8.4.2
 optuna==4.5.0
+matplotlib==3.10.6

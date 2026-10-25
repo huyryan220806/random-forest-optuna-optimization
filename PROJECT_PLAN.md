@@ -446,8 +446,8 @@ Commit nền: `90803c6`. Chỉ S3; chưa làm S4, chưa push GitHub.
 ### Mốc hiện tại
 
 - [x] Đọc kế hoạch/code/log S2; Git sạch khi bắt đầu.
-- [ ] Thêm final evaluation từ cấu hình S2 đã lưu, không chạy lại tuning.
-- [ ] Thêm plots từ log và bảng so sánh, dependencies, kiểm tra S3.
+- [x] Thêm final evaluation từ cấu hình S2 đã lưu, không chạy lại tuning.
+- [x] Thêm plots từ log và bảng so sánh, dependencies, kiểm tra S3.
 - [ ] Chạy kiểm tra, đánh giá holdout chính, lưu `results/final_metrics.json`.
 - [ ] Sinh hai hình, xem ảnh thực tế, cập nhật kết luận/README và commit.
 
@@ -462,4 +462,20 @@ Commit nền: `90803c6`. Chỉ S3; chưa làm S4, chưa push GitHub.
    không chạy lại holdout chỉ để lấy số đẹp hơn. Các log xuất phải ghi phiên bản và timing.
 5. Chỉ báo hoàn tất sau khi kiểm tra lệnh thực, nội dung JSON/CSV và hai ảnh.
 
-Mốc này được ghi trước khi viết code S3. Chưa có kết quả holdout.
+Mốc cập nhật: đã viết code `--evaluate-only`, `src/plots.py`, `tests/test_evaluation.py`
+và cài matplotlib 3.10.6. Bộ kiểm tra ban đầu 23 tests đạt; sau sửa fingerprint để
+chịu được chuyển đổi CRLF/LF của Git, 8 tests S3 đạt (tổng 24 test cases cùng 16 tests S1/S2).
+`pip check` không lỗi. Matplotlib phát cảnh báo deprecation từ pyparsing; không ảnh hưởng kết quả.
+Chưa đánh giá holdout chính thức tại checkpoint code này.
+
+Lệnh tiếp tục tại thư mục gốc (chỉ chạy đánh giá sau khi tests đạt):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m src.experiment --evaluate-only --input-dir results
+.\.venv\Scripts\python.exe -m src.plots --input-dir results --output-dir figures
+```
+
+Lệnh evaluate-only lưu checkpoint `final_metrics.json` sau từng model; chạy lại với
+cùng source hashes sẽ bỏ qua model đã xong, hoặc trả kết quả đã hoàn tất không fit lại.
+Tiếp theo: xem hai PNG, kiểm tra bảng/log, cập nhật README/kết luận, commit S3.

@@ -1,7 +1,7 @@
-"""Run baseline and Optuna search on training folds only (S1/S2).
+"""Run baseline/search on training folds; evaluate frozen results separately.
 
-Final holdout evaluation belongs to S3.
 Run: python -m src.experiment --trials 30 --seed 42 --output-dir results
+Then: python -m src.experiment --evaluate-only --input-dir results
 """
 
 import argparse
@@ -9,6 +9,7 @@ import csv
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from importlib.metadata import version
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -19,6 +20,7 @@ import numpy as np
 import optuna
 from sklearn.datasets import load_breast_cancer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, confusion_matrix, f1_score, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_validate, train_test_split
 
 
@@ -221,7 +223,7 @@ def save_baseline(config, output_dir, data, cv_splits, metadata, n_trials=0):
 def run_baseline(config: ExperimentConfig, output_dir: Path) -> dict:
     """Retain a baseline-only command for S1 reproduction."""
     output_dir = Path(output_dir)
-    if any((output_dir / name).exists() for name in ("trials.csv", "best_config.json")):
+    if any((output_dir / name).exists() for name in ("trials.csv", "best_config.json", "final_metrics.json")):
         raise ValueError("Use a separate output directory for a baseline-only run.")
     output_dir.mkdir(parents=True, exist_ok=True)
     data = load_and_split(config)
@@ -297,6 +299,8 @@ def run_experiment(config: ExperimentConfig, n_trials: int, output_dir: Path) ->
     """One split and one fold list shared by baseline and the entire study."""
     output_dir = Path(output_dir)
     validate_search_output(config, n_trials, output_dir)
+    if (output_dir / "final_metrics.json").exists():
+        raise ValueError("Final evaluation exists; use a separate directory for a new search.")
     output_dir.mkdir(parents=True, exist_ok=True)
     data = load_and_split(config)
     cv_splits = make_cv_splits(data.X_train, data.y_train, config)
@@ -359,25 +363,185 @@ def run_experiment(config: ExperimentConfig, n_trials: int, output_dir: Path) ->
     return result
 
 
+def load_search_results(input_dir: Path):
+    """Validate a completed study before reporting or touching the holdout."""
+    input_dir = Path(input_dir)
+    baseline = json.loads((input_dir / "baseline.json").read_text(encoding="utf-8"))
+    best = json.loads((input_dir / "best_config.json").read_text(encoding="utf-8"))
+    with (input_dir / "trials.csv").open(newline="", encoding="utf-8") as stream:
+        rows = list(csv.DictReader(stream))
+    if (best["status"] != "complete" or not rows or
+            len(rows) != best["n_trials"] or best["n_complete"] != len(rows) or best["n_failed"] != 0):
+        raise ValueError("A complete, consistent search log is required.")
+    for key in ("seed", "n_trials", "dataset", "split", "cv", "seeds", "versions"):
+        if baseline[key] != best[key]:
+            raise ValueError(f"Baseline/search metadata mismatch: {key}")
+    baseline_scores = np.asarray(baseline["cv_auc_folds"], dtype=float)
+    if (baseline_scores.shape != (best["cv"]["n_splits"],) or not np.isfinite(baseline_scores).all()
+            or not np.isclose(baseline["cv_auc_mean"], baseline_scores.mean(), rtol=0, atol=1e-12)
+            or not np.isclose(baseline["cv_auc_std"], baseline_scores.std(ddof=0), rtol=0, atol=1e-12)
+            or best["baseline_cv_auc_mean"] != baseline["cv_auc_mean"]
+            or best["search_space"] != SEARCH_SPACE):
+        raise ValueError("Baseline metrics or search space do not match the frozen study.")
+    for number, row in enumerate(rows):
+        if row["state"] != "COMPLETE" or int(row["trial_number"]) != number or int(row["seed"]) != best["seed"]:
+            raise ValueError("Invalid trial state, order or seed.")
+        scores = np.asarray(json.loads(row["cv_auc_folds"]), dtype=float)
+        if (scores.shape != (best["cv"]["n_splits"],) or not np.isfinite(scores).all()
+                or not ((0 <= scores) & (scores <= 1)).all()
+                or not np.isclose(float(row["cv_auc_mean"]), scores.mean(), rtol=0, atol=1e-12)
+                or not np.isclose(float(row["cv_auc_std"]), scores.std(ddof=0), rtol=0, atol=1e-12)):
+            raise ValueError("Trial scores do not match their fold metrics.")
+        for key in ("duration_sec", "cv_duration_sec"):
+            if not np.isfinite(float(row[key])) or float(row[key]) <= 0:
+                raise ValueError("Invalid trial duration.")
+    winner = max(rows, key=lambda row: float(row["cv_auc_mean"]))
+    params = {
+        "n_estimators": int(winner["n_estimators"]),
+        "max_depth": None if winner["max_depth"] == "None" else int(winner["max_depth"]),
+        "min_samples_leaf": int(winner["min_samples_leaf"]),
+    }
+    if (best["best_trial_number"] != int(winner["trial_number"]) or best["best_params"] != params
+            or best["best_cv_auc_mean"] != float(winner["cv_auc_mean"])
+            or best["best_cv_auc_std"] != float(winner["cv_auc_std"])
+            or best["best_cv_auc_folds"] != json.loads(winner["cv_auc_folds"])):
+        raise ValueError("Best config does not match the CV winner in trials.csv.")
+    expected = make_baseline(ExperimentConfig(seed=best["seed"])).get_params()
+    if baseline["params"] != expected or best["model_params"] != {**expected, **params}:
+        raise ValueError("Saved model parameters differ from the declared baseline/search.")
+    return baseline, best, rows
+
+
+def source_hashes(input_dir: Path):
+    # Normalize text newlines so a Git checkout on Windows/Linux keeps provenance.
+    return {
+        name: hashlib.sha256((input_dir / name).read_text(encoding="utf-8").encode("utf-8")).hexdigest()
+        for name in ("baseline.json", "best_config.json", "trials.csv")
+    }
+
+
+def fit_and_evaluate(params: dict, data: DataSplit) -> dict:
+    """Fit once on full train; obtain holdout probabilities once for all metrics."""
+    model = RandomForestClassifier(**params)
+    started = perf_counter()
+    model.fit(data.X_train, data.y_train)
+    fit_sec = perf_counter() - started
+    started = perf_counter()
+    probabilities = model.predict_proba(data.X_test)
+    inference_sec = perf_counter() - started
+    positive_column = int(np.flatnonzero(model.classes_ == 1)[0])
+    positive_probabilities = probabilities[:, positive_column]
+    # Matches sklearn predict: argmax selects class 0 when probabilities tie.
+    predictions = model.classes_[np.argmax(probabilities, axis=1)]
+    return {
+        "params": params,
+        "test_roc_auc": float(roc_auc_score(data.y_test, positive_probabilities)),
+        "test_f1": float(f1_score(data.y_test, predictions, pos_label=1, zero_division=0)),
+        "test_accuracy": float(accuracy_score(data.y_test, predictions)),
+        "test_balanced_accuracy": float(balanced_accuracy_score(data.y_test, predictions)),
+        "confusion_matrix": confusion_matrix(data.y_test, predictions, labels=[0, 1]).tolist(),
+        "fit_duration_sec": fit_sec,
+        "inference_duration_sec": inference_sec,
+        "inference_sec_per_sample": inference_sec / len(data.y_test),
+        "prediction_calls": 1,
+    }
+
+
+def run_final_evaluation(input_dir: Path, output_dir: Path) -> dict:
+    """Evaluate the frozen main study, checkpointing after each model for resume."""
+    input_dir, output_dir = Path(input_dir), Path(output_dir)
+    baseline, best, _ = load_search_results(input_dir)
+    if best["n_trials"] != DEFAULT_N_TRIALS:
+        raise ValueError("Holdout evaluation requires the completed 30-trial main study, not smoke.")
+    config = ExperimentConfig(seed=best["seed"])
+    fingerprints = source_hashes(input_dir)
+    path = output_dir / "final_metrics.json"
+    existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    if existing and existing["source_sha256"] != fingerprints:
+        raise ValueError("Source logs changed after evaluation; refusing to mix results.")
+    if existing and existing["status"] == "complete":
+        return existing  # Idempotent: no second fit or holdout prediction.
+    data = load_and_split(config)  # Reconstruct exactly the saved S2 split.
+    folds = make_cv_splits(data.X_train, data.y_train, config)
+    metadata = build_metadata(config, data, folds)
+    metadata["seeds"]["optuna"] = config.seed
+    for key in ("dataset", "split", "cv", "seeds", "versions"):
+        if metadata[key] != best[key]:
+            raise ValueError(f"Current evaluation differs from frozen S2 metadata: {key}")
+    selected = "optimized" if best["best_cv_auc_mean"] > baseline["cv_auc_mean"] else "baseline"
+    result = existing or {
+        **metadata,
+        "stage": "S3-holdout",
+        "status": "in_progress",
+        "n_trials": best["n_trials"],
+        "source_sha256": fingerprints,
+        "source_hash_scope": "UTF-8 text with CRLF normalized to LF",
+        "best_trial_number": best["best_trial_number"],
+        "selection": {
+            "model": selected,
+            "basis": "Higher train CV ROC-AUC; ties keep baseline. Fixed before holdout evaluation.",
+            "uses_holdout": False,
+        },
+        "threshold": 0.5,
+        "threshold_rule": "malignant if probability > 0.5; ties select benign (sklearn argmax)",
+        "confusion_matrix_order": "rows=true, columns=predicted; labels=[0 benign, 1 malignant]",
+        "search_duration_sec": best["search_duration_sec"],
+        "timing": {
+            "clock": "time.perf_counter",
+            "fit_scope": "one fit on all training samples",
+            "inference_scope": "one predict_proba batch over all holdout samples, excluding metrics",
+            "repetitions": 1,
+            "per_sample_scope": "batch time divided by sample count, not isolated request latency",
+        },
+        "models": {},
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    write_json(path, result)  # Selection is persisted before seeing test predictions.
+    for name, params, cv_mean, cv_std in (
+        ("baseline", baseline["params"], baseline["cv_auc_mean"], baseline["cv_auc_std"]),
+        ("optimized", best["model_params"], best["best_cv_auc_mean"], best["best_cv_auc_std"]),
+    ):
+        if name not in result["models"]:
+            result["models"][name] = {
+                **fit_and_evaluate(params, data),
+                "cv_auc_mean": cv_mean, "cv_auc_std": cv_std,
+            }
+            result["holdout_evaluated"] = True
+            write_json(path, result)
+    result["status"] = "complete"
+    result["completed_at_utc"] = datetime.now(timezone.utc).isoformat()
+    write_json(path, result)
+    return result
+
+
 def parse_args(argv=None):
     defaults = ExperimentConfig()
     parser = argparse.ArgumentParser(
-        description="S1/S2: baseline and Optuna CV search; holdout is not evaluated."
+        description="Baseline/search CV, or --evaluate-only for frozen S2 holdout evaluation."
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--trials", type=int, default=DEFAULT_N_TRIALS)
     mode.add_argument("--baseline-only", action="store_true")
+    mode.add_argument("--evaluate-only", action="store_true")
     parser.add_argument("--seed", type=int, default=defaults.seed)
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--input-dir", type=Path, help="Saved S2 logs; only with --evaluate-only")
     args = parser.parse_args(argv)
     if not 0 <= args.seed < 2**32:
         parser.error("--seed must be between 0 and 2**32 - 1")
-    if args.output_dir is None:
+    if args.evaluate_only:
+        if args.seed != defaults.seed:
+            parser.error("Evaluation uses the seed saved in S2 logs; do not override --seed.")
+        args.input_dir = args.input_dir or Path("results")
+        args.output_dir = args.output_dir or args.input_dir
+    elif args.input_dir is not None:
+        parser.error("--input-dir requires --evaluate-only")
+    elif args.output_dir is None:
         args.output_dir = Path(
             "results/baseline-only" if args.baseline_only else
             "results" if args.trials == DEFAULT_N_TRIALS else "results/smoke"
         )
-    if not args.baseline_only:
+    if not args.baseline_only and not args.evaluate_only:
         try:
             validate_search_output(ExperimentConfig(seed=args.seed), args.trials, args.output_dir)
         except ValueError as error:
@@ -388,7 +552,12 @@ def parse_args(argv=None):
 def main(argv=None):
     args = parse_args(argv)
     config = ExperimentConfig(seed=args.seed)
-    if args.baseline_only:
+    if args.evaluate_only:
+        result = run_final_evaluation(args.input_dir, args.output_dir)
+        for name, metrics in result["models"].items():
+            print(f"{name}: test AUC={metrics['test_roc_auc']:.6f}, F1={metrics['test_f1']:.6f}")
+        print(f"Selection fixed by CV: {result['selection']['model']}; status: {result['status']}")
+    elif args.baseline_only:
         result = run_baseline(config, args.output_dir)
         print(f"Baseline CV ROC-AUC: {result['cv_auc_mean']:.6f} +/- {result['cv_auc_std']:.6f}")
         print("Holdout not evaluated; Optuna trials: 0.")
