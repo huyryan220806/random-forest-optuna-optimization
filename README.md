@@ -4,9 +4,18 @@
 bài tập lớn cá nhân học phần Nhập môn Tối ưu hóa.
 
 Repository: [huyryan220806/random-forest-optuna-optimization](https://github.com/huyryan220806/random-forest-optuna-optimization).
-Tiến độ hiện tại: **S3 — đánh giá holdout & hình đã hoàn tất**. Kế hoạch, checkpoint
-và hướng dẫn tiếp tục nằm ở [PROJECT_PLAN.md](PROJECT_PLAN.md). Báo cáo/slide/demo
-(S4) chưa triển khai; chỉ làm khi được yêu cầu.
+Tiến độ hiện tại: **S1–S4 — MVP và bộ tài liệu bàn giao đã hoàn tất**.
+Kế hoạch và checkpoint nằm ở [PROJECT_PLAN.md](PROJECT_PLAN.md).
+
+- [Báo cáo Word 11 trang](report/Bao_cao_Random_Forest_Optuna.docx) ·
+  [PDF](report/Bao_cao_Random_Forest_Optuna.pdf)
+- [Slide 8 trang](report/Trinh_bay_Random_Forest_Optuna.pptx) ·
+  [Kịch bản demo 5–7 phút](report/DEMO.md)
+- [Kiểm chứng clone và chạy lại](report/REPRODUCIBILITY.md) ·
+  [Hướng dẫn bàn giao](report/README.md)
+
+Thông tin cá nhân để **(tự điền)**. Người học cần tự kiểm chứng, luyện demo,
+nộp bài và đối chiếu checkpoint 5 tuần theo lịch giảng viên.
 
 ## Problem
 
@@ -39,7 +48,7 @@ Giữ nguyên các tham số khác theo mặc định của scikit-learn, chỉ 
 
 Budget S2: **30 trials**, `TPESampler(seed=42)`; smoke test 3 trials
 lưu riêng. Thời gian là chi phí cần đo/phân tích, không
-phải ràng buộc cứng. Baseline không có chi phí tìm kiếm; sau này cần báo riêng
+phải ràng buộc cứng. Baseline không có chi phí tìm kiếm; bảng kết quả báo riêng
 chi phí search của Optuna. Không chọn cấu hình, seed hay threshold bằng test score.
 
 ## Dataset và Method
@@ -157,9 +166,11 @@ Windows; nên dùng Python 3.12 để đối chiếu kết quả. Các dependenc
 được ghim phiên bản trong `requirements.txt`, gồm scikit-learn 1.7.2, Optuna 4.5.0
 và matplotlib 3.10.6. CSV được ghi bằng thư viện chuẩn Python; không cần pandas.
 
-Tại thư mục gốc repo, dùng Windows PowerShell:
+Clone repository, sau đó dùng Windows PowerShell tại gốc repo:
 
 ```powershell
+git clone https://github.com/huyryan220806/random-forest-optuna-optimization.git
+cd random-forest-optuna-optimization
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
@@ -185,9 +196,9 @@ Sau khi activate có thể dùng `python` thay đường dẫn virtualenv. Để
 pipeline độc lập (chỉ xác minh tái lập, không tuning từ test), dùng thư mục riêng:
 
 ```powershell
-python -m src.experiment --trials 30 --seed 42 --output-dir results/repro
-python -m src.experiment --evaluate-only --input-dir results/repro
-python -m src.plots --input-dir results/repro --output-dir figures/repro
+.\.venv\Scripts\python.exe -m src.experiment --trials 30 --seed 42 --output-dir results/repro/lan-moi
+.\.venv\Scripts\python.exe -m src.experiment --evaluate-only --input-dir results/repro/lan-moi
+.\.venv\Scripts\python.exe -m src.plots --input-dir results/repro/lan-moi --output-dir figures/repro/lan-moi
 ```
 
 Mặc định hiện chạy **30 trials**; muốn chỉ chạy baseline phải thêm `--baseline-only`.
@@ -266,7 +277,7 @@ giống hệt khi chạy lại. JSON không chấp nhận NaN/Infinity.
 │   └── final_metrics.json   # Holdout và timing, checkpoint tiếp tục
 ├── tests/                  # Protocol, logging, metrics, resume, plots
 ├── figures/                # Hai PNG và comparison.csv / comparison.md
-├── report/README.md         # S4
+├── report/                  # Word/PDF 11 trang, PPTX 8 slide, demo, kiểm chứng
 └── plans/                  # Tài liệu đầu vào; PDF giữ cục bộ
 ```
 
@@ -279,6 +290,12 @@ minh khả năng chẩn đoán lâm sàng. Không triển khai ứng dụng web 
 
 ## AI assistance
 
-Codex hỗ trợ tạo cấu trúc, baseline/Optuna/evaluation/plots, tài liệu và chạy các kiểm tra
-ghi trong nhật ký S1–S3. Đây là kiểm chứng do công cụ thực hiện; phần người học tự
-chạy, đọc hiểu code và giải thích kết quả cần được người học bổ sung sau khi làm.
+Codex hỗ trợ cấu trúc, baseline/Optuna/evaluation/plots, báo cáo/slide/demo và kiểm tra
+trong nhật ký S1–S4. Đã clone từ GitHub, tạo venv mới, cài requirements, chạy **24 tests**,
+smoke 3 trials và pipeline 30 trials/holdout/plots; cấu hình, điểm CV và holdout khớp
+log chính, timing được loại khỏi phép so sánh. Chi tiết và giới hạn ở
+[REPRODUCIBILITY.md](report/REPRODUCIBILITY.md).
+
+Đây là kiểm chứng do công cụ thực hiện. Phần người học tự chạy, đọc hiểu code và
+giải thích kết quả: **(tự điền)** sau khi trực tiếp làm. Không giả ngày commit hoặc
+coi số mốc commit đã có là bằng chứng hoàn thành checkpoint 5 tuần.

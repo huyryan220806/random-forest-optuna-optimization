@@ -2,7 +2,7 @@
 
 > **Tài liệu làm việc cho Codex** | Học phần: **Nhập môn Tối ưu hóa** | Bài tập lớn **cá nhân** | Ngôn ngữ thực hiện: **Python**
 >
-> **Trạng thái (25/10/2026):** **S1–S3 đã hoàn tất và kiểm chứng**. Có log 30 trials, holdout metrics, hai hình và bảng sinh từ log. Checkpoint/hướng dẫn tiếp tục tại mục 12. **S4 chưa triển khai; chưa push GitHub.**
+> **Trạng thái (30/10/2026):** **S1–S4 đã hoàn tất và kiểm chứng trong phạm vi MVP**. Repository GitHub công khai; báo cáo Word/PDF 11 trang, slide 8 trang, demo và checklist tái lập ở `report/`. Nhật ký bàn giao tại mục 13. Thông tin cá nhân để **(tự điền)**.
 >
 > **Quỹ thời gian thực tế:** 2–3 tuần tập trung, **1–2 ngày làm việc mỗi tuần** (dự kiến 4 ngày làm việc cốt lõi, tối đa 6 ngày nếu có thể). Hạn chế phát sinh việc ngoài phạm vi.
 
@@ -242,9 +242,10 @@ Có thể bổ sung bảng so sánh baseline / optimized (CV mean±std; test ROC
 - [x] Baseline và nguyên lý TPE; không chỉ ghi `study.optimize(...)`.
 - [x] Protocol train/CV/test; seed, budget, môi trường; giới hạn nghiên cứu.
 - [x] Bảng và ≥2 hình có thể tái lập; chọn nghiệm cuối bằng lý do và số liệu.
-- [ ] Báo cáo Word/PDF 8–12 trang, repo link; slide 5–8 trang **hoặc** 1 trang tóm tắt; demo 5–7 phút.
-- [ ] GitHub public; README có Problem, Optimization Formulation, Dataset, Method, Key Results, How to Run, Repository Structure, Limitations.
-- [ ] Có ≥5 mốc commit có ý nghĩa; đối chiếu thêm yêu cầu **checkpoint theo tuần** nếu giảng viên kiểm tra.
+- [x] Báo cáo Word/PDF 11 trang, repo link; slide 8 trang; kịch bản demo 6 phút 30 giây.
+- [x] GitHub public; README có Problem, Optimization Formulation, Dataset, Method, Key Results, How to Run, Repository Structure, Limitations.
+- [x] Có ≥5 mốc commit thật có ý nghĩa.
+- [ ] Người học đối chiếu **checkpoint 5 tuần**, điền thông tin và tự kiểm chứng/nộp LMS theo lịch; không coi số commit là bằng chứng đã nộp đủ tuần.
 - [x] Có mục **AI assistance** mô tả Codex hỗ trợ những gì và người làm đã tự kiểm chứng phần nào.
 
 ---
@@ -264,7 +265,7 @@ Có thể bổ sung bảng so sánh baseline / optimized (CV mean±std; test ROC
 | Metric | CV ROC-AUC (chính), test ROC-AUC/F1 (báo cáo), runtime |
 | Budget/điều kiện dừng | 30 trials; 3 folds/trial; seed cố định; dừng sau đủ trials hoặc lỗi được ghi nhận |
 | Sản phẩm tuần cuối | GitHub repo công khai; Python code; CSV/JSON log; ≥2 hình; báo cáo 8–12 trang; slide/tóm tắt + demo |
-| GitHub repository | `random-forest-optuna-optimization` (đề xuất; đường dẫn thực tế điền sau) |
+| GitHub repository | https://github.com/huyryan220806/random-forest-optuna-optimization |
 
 ---
 
@@ -517,3 +518,62 @@ Tiếp theo: xem hai PNG, kiểm tra bảng/log, cập nhật README/kết luậ
 **Điểm tiếp tục:** S3 đã xong. Nếu phiên kết thúc do quota, đọc mục này và `git status`;
 không cần chạy lại tuning/holdout. Chờ người dùng yêu cầu S4 để làm báo cáo 8–12 trang,
 slide/tóm tắt và hướng dẫn demo. Chưa tự push GitHub.
+
+---
+
+## 13. Nhật ký triển khai S4 — 30/10/2026
+
+**Ủy quyền:** người dùng yêu cầu push GitHub và làm S4 nếu S3 đã hoàn tất.
+Đã push thành công 5 commit S1–S3 lên `origin/main` tại `6ac99d7`.
+Thông tin họ tên, MSSV, lớp, giảng viên để đúng chuỗi **(tự điền)** theo yêu cầu.
+
+**Đang làm:** báo cáo Word/PDF 8–12 trang, slide 5–8 trang, kịch bản demo 5–7 phút,
+kiểm tra clone mới và README. Mọi số liệu lấy từ log S2/S3; không chạy mở rộng
+seed, dataset hoặc phương pháp. Build/preview/clone kiểm chứng giữ trong `.build/`.
+
+**Nếu gián đoạn:** đọc mục này, `git status`, `report/README.md`; kiểm tra tài liệu
+thực tế trước khi đánh dấu hoàn tất. Chưa tự coi bản dựng chưa render là bản nộp.
+Giữ nguyên kết quả chính; kiểm chứng chạy lại bằng thư mục `results/repro/...` riêng.
+
+### Checkpoint biên soạn
+
+- GitHub đã xác nhận public, About và 7 topics đã cập nhật.
+- Clone mới từ GitHub tại `.build/s4/clean-clone`, tạo venv mới và cài requirements:
+  `pip check` đạt, **24 tests passed** (14 cảnh báo deprecation), smoke 3 trials đạt.
+- Run 30 trials + holdout + plots trên clone đạt; so sánh mọi params/fold/CV và metric
+  holdout với main khớp (tolerance 1e-12; trial non-timing values khớp chính xác).
+  Đọc lại evaluate-only giữ nguyên byte final_metrics cả main clone và repro.
+- `report/build_report.py` đã sinh Word; PDF xuất bằng Microsoft Word có **11 trang**.
+  Renderer LibreOffice không có sẵn; đang kiểm tra PNG từ PDF bằng Poppler.
+- `report/build_slides.mjs` đang dựng 8 slide editable; finalizer cần biến môi trường
+  `RUNTIME_NODE_MODULES` và chart snapshot làm tròn 10 chữ số thập phân (log giữ nguyên).
+- **Chưa chốt S4:** hoàn tất visual QA tất cả trang/slide, DEMO/REPRODUCIBILITY/README,
+  commit và push S4. Không cần chạy lại thí nghiệm vì code thực nghiệm chưa đổi.
+
+### Bàn giao S4 hoàn tất
+
+- Có `report/Bao_cao_Random_Forest_Optuna.docx` và PDF **11 trang**; công thức
+  Word chỉnh sửa được, đủ formulation/protocol/baseline/TPE/logging, hai hình,
+  CV/holdout/timing, quyết định/giới hạn, hướng dẫn chạy, AI assistance và nguồn.
+- Có `report/Trinh_bay_Random_Forest_Optuna.pptx` **8 slides**, 3 bảng và 2 chart
+  native, workbook nhúng, speaker notes. Finalizer kiểm tra package, layout,
+  font và chart/workbook đạt. Đã mở bằng PowerPoint, xuất và xem cả 8 slides;
+  sửa tên series/resize chart trong bản sao, lưu/mở lại thành công.
+- PDF xuất từ Word đã render bằng Poppler và xem từng trang; sửa đường kẻ thừa
+  ở tiêu đề. Đã sửa biểu đồ slide để không làm mượt đường best-so-far.
+- `report/DEMO.md` có kịch bản **6 phút 30 giây**, lệnh demo và câu hỏi bảo vệ.
+  `report/REPRODUCIBILITY.md` ghi lệnh, kết quả kiểm chứng và giới hạn.
+- README hoàn thiện và liên kết bộ tài liệu. Có mã dựng tài liệu để truy nguồn;
+  dependencies biên soạn tách khỏi requirements của thực nghiệm.
+- Đã kiểm tra code/log thực: objective chỉ nhận train; cùng hàm CV/folds;
+  lựa chọn trước holdout; giữ nguyên toàn bộ `src/`, tests, requirements,
+  `results/` và `figures/` so với S3. Không tuning bổ sung, không triển khai S5/S6.
+- Chi tiết clone/venv mới và 24 tests đạt nằm trong checkpoint trên; params,
+  chuỗi 30 trials, CV/holdout khớp. Timing không dùng làm tiêu chí tái lập.
+- Bản bàn giao dùng nhánh `main`, tag `v1.0`. About và 7 topics đã cấu hình;
+  không phát hành GitHub Release riêng hoặc thao tác LMS thay người học.
+
+**Điểm dừng:** MVP S1–S4 xong. Người dùng điền **(tự điền)** trong Word/slide,
+bổ sung phần trực tiếp tự kiểm chứng, xuất lại PDF, luyện demo và nộp đúng lịch.
+Checkpoint 5 tuần cần người học xác nhận với giảng viên; không giả ngày commit.
+Nếu mở phiên mới, đọc mục này và `git status`, không cần chạy lại main/tuning.

@@ -23,3 +23,7 @@ figures/repro/
 figures/smoke/
 # Original course handouts stay local; the working plan lives at the root.
 plans/*.pdf
+# Private document builds, clean-clone verification and render previews.
+.build/
+*.tmp
+.chart-data-*/
