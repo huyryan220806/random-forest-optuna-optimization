@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "created_at_utc": "2026-11-25T09:36:39.442055+00:00",
+  "seed": 43,
+  "seeds": {
+    "split": 43,
+    "cv": 43,
+    "random_forest": 43,
+    "optuna": 43
+  },
+  "dataset": {
+    "name": "Breast Cancer Wisconsin (Diagnostic)",
+    "loader": "sklearn.datasets.load_breast_cancer",
+    "source_doi": "https://doi.org/10.24432/C5DW2B",
+    "n_samples": 569,
+    "n_features": 30,
+    "target_transform": "y = (target == 0).astype(int)",
+    "positive_class": "malignant",
+    "labels": {
+      "0": "benign",
+      "1": "malignant"
+    }
+  },
+  "split": {
+    "method": "train_test_split",
+    "test_size": 0.2,
+    "stratify": true,
+    "shuffle": true,
+    "random_state": 43,
+    "n_train": 455,
+    "n_test": 114,
+    "train_class_counts": {
+      "benign_0": 285,
+      "malignant_1": 170
+    },
+    "test_class_counts": {
+      "benign_0": 72,
+      "malignant_1": 42
+    }
+  },
+  "cv": {
+    "method": "StratifiedKFold",
+    "n_splits": 3,
+    "shuffle": true,
+    "random_state": 43,
+    "scoring": "roc_auc",
+    "data_scope": "train_only",
+    "std_ddof": 0,
+    "n_jobs": 1,
+    "fold_sizes": [
+      {
+        "train": 303,
+        "validation": 152
+      },
+      {
+        "train": 303,
+        "validation": 152
+      },
+      {
+        "train": 304,
+        "validation": 151
+      }
+    ]
+  },
+  "holdout_evaluated": false,
+  "timing": {
+    "clock": "time.perf_counter",
+    "duration_sec_scope": "3-fold CV wall time: fitting, scoring and CV overhead"
+  },
+  "versions": {
+    "python": "3.12.10",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "optuna": "4.5.0"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "logical_cpu_count": 12
+  },
+  "stage": "S2-baseline",
+  "n_trials": 30,
+  "baseline_search_trials": 0,
+  "params": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": null,
+    "criterion": "gini",
+    "max_depth": null,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 100,
+    "n_jobs": 1,
+    "oob_score": false,
+    "random_state": 43,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "cv_auc_folds": [
+    0.9845798707294552,
+    0.9815327793167129,
+    0.9996240601503759
+  ],
+  "cv_auc_mean": 0.988578903398848,
+  "cv_auc_std": 0.007908552639127184,
+  "duration_sec": 0.6857973999576643,
+  "fit_time_sec_per_fold": [
+    0.20962285995483398,
+    0.21981596946716309,
+    0.22706174850463867
+  ],
+  "score_time_sec_per_fold": [
+    0.00849604606628418,
+    0.008988380432128906,
+    0.008569478988647461
+  ]
+}

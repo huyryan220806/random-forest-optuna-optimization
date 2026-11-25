@@ -13,6 +13,7 @@ Kế hoạch và checkpoint nằm ở [PROJECT_PLAN.md](PROJECT_PLAN.md).
   [Kịch bản demo 5–7 phút](report/DEMO.md)
 - [Kiểm chứng clone và chạy lại](report/REPRODUCIBILITY.md) ·
   [Hướng dẫn bàn giao](report/README.md)
+- [Minh chứng 3 lần chạy, 90 trials và kết quả theo seed](results/repeated-runs/2026-11-25/README.md)
 
 Thông tin cá nhân để **(tự điền)**. Người học cần tự kiểm chứng, luyện demo,
 nộp bài và đối chiếu checkpoint 5 tuần theo lịch giảng viên.
@@ -283,8 +284,10 @@ giống hệt khi chạy lại. JSON không chấp nhận NaN/Infinity.
 
 ## Limitations
 
-Hiện chỉ có một seed và một dataset nhỏ; std giữa các folds không phải độ bất định
-qua nhiều lần chạy độc lập. Best CV chịu ảnh hưởng của việc chọn cấu hình từ nhiều
+Báo cáo v1.0 phân tích seed 42. Thí nghiệm bổ sung ngày 25/11/2026 chạy cùng quy
+trình với ba seed trên cùng một dataset nhỏ. Các lần chia có thể chứa các mẫu trùng
+nhau. Độ lệch chuẩn giữa ba seed mô tả biến động quan sát được, khác với độ lệch
+chuẩn giữa các folds của một lần chạy. Best CV chịu ảnh hưởng của việc chọn cấu hình từ nhiều
 lần thử; holdout chỉ là một lần kiểm tra trên 114 mẫu. Dataset phục vụ benchmark học thuật, không chứng
 minh khả năng chẩn đoán lâm sàng. Không triển khai ứng dụng web hoặc mô hình khác.
 

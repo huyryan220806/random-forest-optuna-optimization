@@ -577,3 +577,12 @@ Giữ nguyên kết quả chính; kiểm chứng chạy lại bằng thư mục 
 bổ sung phần trực tiếp tự kiểm chứng, xuất lại PDF, luyện demo và nộp đúng lịch.
 Checkpoint 5 tuần cần người học xác nhận với giảng viên; không giả ngày commit.
 Nếu mở phiên mới, đọc mục này và `git status`, không cần chạy lại main/tuning.
+
+## 14. Minh chứng thực nghiệm lặp lại ngày 25/11/2026
+
+Theo yêu cầu bổ sung sau S4, đã chạy ba study mới với seed 42, 43, 44, mỗi study
+30 trials và cùng quy tắc chọn cấu hình bằng CV. Cả 90 trials hoàn tất. Đã đối
+chiếu console, log từng trial và kết quả holdout. Δ AUC holdout của Optuna so với
+baseline lần lượt là +0.001157, +0.000827 và −0.002646. Bảng so sánh, biểu đồ,
+log theo giờ và lệnh để sinh viên tự chạy nằm trong
+[minh chứng thực nghiệm](results/repeated-runs/2026-11-25/README.md).

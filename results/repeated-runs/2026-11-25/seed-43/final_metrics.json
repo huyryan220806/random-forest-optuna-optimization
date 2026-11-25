@@ -1,0 +1,196 @@
+{
+  "schema_version": 2,
+  "created_at_utc": "2026-11-25T09:37:09.701232+00:00",
+  "seed": 43,
+  "seeds": {
+    "split": 43,
+    "cv": 43,
+    "random_forest": 43,
+    "optuna": 43
+  },
+  "dataset": {
+    "name": "Breast Cancer Wisconsin (Diagnostic)",
+    "loader": "sklearn.datasets.load_breast_cancer",
+    "source_doi": "https://doi.org/10.24432/C5DW2B",
+    "n_samples": 569,
+    "n_features": 30,
+    "target_transform": "y = (target == 0).astype(int)",
+    "positive_class": "malignant",
+    "labels": {
+      "0": "benign",
+      "1": "malignant"
+    }
+  },
+  "split": {
+    "method": "train_test_split",
+    "test_size": 0.2,
+    "stratify": true,
+    "shuffle": true,
+    "random_state": 43,
+    "n_train": 455,
+    "n_test": 114,
+    "train_class_counts": {
+      "benign_0": 285,
+      "malignant_1": 170
+    },
+    "test_class_counts": {
+      "benign_0": 72,
+      "malignant_1": 42
+    }
+  },
+  "cv": {
+    "method": "StratifiedKFold",
+    "n_splits": 3,
+    "shuffle": true,
+    "random_state": 43,
+    "scoring": "roc_auc",
+    "data_scope": "train_only",
+    "std_ddof": 0,
+    "n_jobs": 1,
+    "fold_sizes": [
+      {
+        "train": 303,
+        "validation": 152
+      },
+      {
+        "train": 303,
+        "validation": 152
+      },
+      {
+        "train": 304,
+        "validation": 151
+      }
+    ]
+  },
+  "holdout_evaluated": true,
+  "timing": {
+    "clock": "time.perf_counter",
+    "fit_scope": "one fit on all training samples",
+    "inference_scope": "one predict_proba batch over all holdout samples, excluding metrics",
+    "repetitions": 1,
+    "per_sample_scope": "batch time divided by sample count, not isolated request latency"
+  },
+  "versions": {
+    "python": "3.12.10",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "optuna": "4.5.0"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "logical_cpu_count": 12
+  },
+  "stage": "S3-holdout",
+  "status": "complete",
+  "n_trials": 30,
+  "source_sha256": {
+    "baseline.json": "6728eb6db978b1bfbc09e001f0ce9239d8f406ac816f6abeb5e71416550811b6",
+    "best_config.json": "c913e8d8919d6e86f4f0bfb7275b5f59eda3eaadbaf1ddb59b86e60d9749661d",
+    "trials.csv": "15e557f6ec6f72395bff593d18354ebf6e9f2854fec313d9591ac82b5182818f"
+  },
+  "source_hash_scope": "UTF-8 text with CRLF normalized to LF",
+  "best_trial_number": 2,
+  "selection": {
+    "model": "optimized",
+    "basis": "Higher train CV ROC-AUC; ties keep baseline. Fixed before holdout evaluation.",
+    "uses_holdout": false
+  },
+  "threshold": 0.5,
+  "threshold_rule": "malignant if probability > 0.5; ties select benign (sklearn argmax)",
+  "confusion_matrix_order": "rows=true, columns=predicted; labels=[0 benign, 1 malignant]",
+  "search_duration_sec": 25.166282900027,
+  "models": {
+    "baseline": {
+      "params": {
+        "bootstrap": true,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": null,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 100,
+        "n_jobs": 1,
+        "oob_score": false,
+        "random_state": 43,
+        "verbose": 0,
+        "warm_start": false
+      },
+      "test_roc_auc": 0.9869378306878307,
+      "test_f1": 0.9411764705882353,
+      "test_accuracy": 0.956140350877193,
+      "test_balanced_accuracy": 0.9553571428571428,
+      "confusion_matrix": [
+        [
+          69,
+          3
+        ],
+        [
+          2,
+          40
+        ]
+      ],
+      "fit_duration_sec": 0.2637111999792978,
+      "inference_duration_sec": 0.006331400014460087,
+      "inference_sec_per_sample": 5.5538596618070935e-05,
+      "prediction_calls": 1,
+      "cv_auc_mean": 0.988578903398848,
+      "cv_auc_std": 0.007908552639127184
+    },
+    "optimized": {
+      "params": {
+        "bootstrap": true,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": 6,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 50,
+        "n_jobs": 1,
+        "oob_score": false,
+        "random_state": 43,
+        "verbose": 0,
+        "warm_start": false
+      },
+      "test_roc_auc": 0.9877645502645503,
+      "test_f1": 0.9411764705882353,
+      "test_accuracy": 0.956140350877193,
+      "test_balanced_accuracy": 0.9553571428571428,
+      "confusion_matrix": [
+        [
+          69,
+          3
+        ],
+        [
+          2,
+          40
+        ]
+      ],
+      "fit_duration_sec": 0.12926499999593943,
+      "inference_duration_sec": 0.004078099969774485,
+      "inference_sec_per_sample": 3.577280675240776e-05,
+      "prediction_calls": 1,
+      "cv_auc_mean": 0.9892560348239018,
+      "cv_auc_std": 0.007618823885542387
+    }
+  },
+  "completed_at_utc": "2026-11-25T09:37:10.185817+00:00"
+}

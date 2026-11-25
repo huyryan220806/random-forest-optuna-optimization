@@ -1,0 +1,47 @@
+
+2026-11-25T09:36:35.282963+00:00 | python -m src.experiment --trials 30 --seed 43 --output-dir results\repeated-runs\2026-11-25\seed-43
+[I 2026-11-25 16:36:40,195] A new study created in memory with name: no-name-794bca31-852b-41ef-9c73-da2d8c7fed3f
+[I 2026-11-25 16:36:40,533] Trial 0 finished with value: 0.9881150244031129 and parameters: {'n_estimators': 50, 'max_depth': 12, 'min_samples_leaf': 1}. Best is trial 0 with value: 0.9881150244031129.
+[I 2026-11-25 16:36:41,973] Trial 1 finished with value: 0.9866398452271028 and parameters: {'n_estimators': 200, 'max_depth': 12, 'min_samples_leaf': 3}. Best is trial 0 with value: 0.9881150244031129.
+[I 2026-11-25 16:36:42,396] Trial 2 finished with value: 0.9892560348239018 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:44,155] Trial 3 finished with value: 0.9849107417666975 and parameters: {'n_estimators': 250, 'max_depth': 24, 'min_samples_leaf': 8}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:45,924] Trial 4 finished with value: 0.985464758387196 and parameters: {'n_estimators': 250, 'max_depth': 8, 'min_samples_leaf': 6}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:46,679] Trial 5 finished with value: 0.9858077210570285 and parameters: {'n_estimators': 100, 'max_depth': 8, 'min_samples_leaf': 4}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:48,058] Trial 6 finished with value: 0.9855878731917512 and parameters: {'n_estimators': 200, 'max_depth': 6, 'min_samples_leaf': 7}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:48,761] Trial 7 finished with value: 0.9870399683419073 and parameters: {'n_estimators': 100, 'max_depth': None, 'min_samples_leaf': 2}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:50,228] Trial 8 finished with value: 0.9861451875302291 and parameters: {'n_estimators': 200, 'max_depth': 8, 'min_samples_leaf': 5}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:52,026] Trial 9 finished with value: 0.985652728312008 and parameters: {'n_estimators': 250, 'max_depth': None, 'min_samples_leaf': 5}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:52,457] Trial 10 finished with value: 0.9892560348239018 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:52,829] Trial 11 finished with value: 0.9892560348239018 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:53,580] Trial 12 finished with value: 0.9863320582157148 and parameters: {'n_estimators': 100, 'max_depth': 16, 'min_samples_leaf': 3}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:53,989] Trial 13 finished with value: 0.9869751132216505 and parameters: {'n_estimators': 50, 'max_depth': 4, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:55,137] Trial 14 finished with value: 0.9870388691025811 and parameters: {'n_estimators': 150, 'max_depth': 6, 'min_samples_leaf': 2}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:55,873] Trial 15 finished with value: 0.9864243943191311 and parameters: {'n_estimators': 100, 'max_depth': 6, 'min_samples_leaf': 3}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:56,347] Trial 16 finished with value: 0.9878083366310513 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 2}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:57,561] Trial 17 finished with value: 0.9856219496108692 and parameters: {'n_estimators': 150, 'max_depth': 24, 'min_samples_leaf': 4}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:57,985] Trial 18 finished with value: 0.9869751132216505 and parameters: {'n_estimators': 50, 'max_depth': 4, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:36:59,288] Trial 19 finished with value: 0.986762960031658 and parameters: {'n_estimators': 150, 'max_depth': 16, 'min_samples_leaf': 2}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:00,057] Trial 20 finished with value: 0.9864243943191311 and parameters: {'n_estimators': 100, 'max_depth': 6, 'min_samples_leaf': 3}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:00,462] Trial 21 finished with value: 0.9892560348239018 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:00,887] Trial 22 finished with value: 0.9892560348239018 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:01,285] Trial 23 finished with value: 0.9878083366310513 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 2}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:02,055] Trial 24 finished with value: 0.9889779272743261 and parameters: {'n_estimators': 100, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:02,484] Trial 25 finished with value: 0.9878083366310513 and parameters: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 2}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:03,290] Trial 26 finished with value: 0.9889779272743261 and parameters: {'n_estimators': 100, 'max_depth': 6, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:03,691] Trial 27 finished with value: 0.9862386228729719 and parameters: {'n_estimators': 50, 'max_depth': None, 'min_samples_leaf': 4}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:04,937] Trial 28 finished with value: 0.9861781647100206 and parameters: {'n_estimators': 150, 'max_depth': 16, 'min_samples_leaf': 3}. Best is trial 2 with value: 0.9892560348239018.
+[I 2026-11-25 16:37:05,355] Trial 29 finished with value: 0.9881150244031129 and parameters: {'n_estimators': 50, 'max_depth': 12, 'min_samples_leaf': 1}. Best is trial 2 with value: 0.9892560348239018.
+Baseline CV ROC-AUC: 0.988579
+Best CV ROC-AUC: 0.989256 +/- 0.007619
+Best params: {'n_estimators': 50, 'max_depth': 6, 'min_samples_leaf': 1}
+Search time: 25.166s; completed trials: 30
+S2 complete. Holdout not evaluated.
+Saved results to: results\repeated-runs\2026-11-25\seed-43
+2026-11-25T09:37:05.594685+00:00 | exit=0
+
+2026-11-25T09:37:05.594685+00:00 | python -m src.experiment --evaluate-only --input-dir results\repeated-runs\2026-11-25\seed-43
+baseline: test AUC=0.986938, F1=0.941176
+optimized: test AUC=0.987765, F1=0.941176
+Selection fixed by CV: optimized; status: complete
+Saved results to: results\repeated-runs\2026-11-25\seed-43
+2026-11-25T09:37:10.361333+00:00 | exit=0
